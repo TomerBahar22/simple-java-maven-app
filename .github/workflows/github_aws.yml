@@ -35,5 +35,5 @@ jobs:
       
       - name: deploy
         run: |
-          docker run ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/simple-java-maven-app:${{ steps.patch.outputs.new_version }}
+          docker run ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-north-1.amazonaws.com/simple-java-maven-app:${{ steps.patch.outputs.new_version }}
       
