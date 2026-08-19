@@ -30,7 +30,6 @@ jobs:
             account_id: ${{ secrets.AWS_ACCOUNT_ID }}
             repo: simple-java-maven-app
             region: eu-north-1
-            create_repo: true
             tags: ${{ steps.patch.outputs.new_version }},latest
 
       
