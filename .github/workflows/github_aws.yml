@@ -24,8 +24,6 @@ jobs:
 
       - name: Build and push to AWS ECR
         uses: kciter/aws-ecr-action@v5
-        env:
-            DOCKER_MIN_API_VERSION: "1.42"
         with:
             access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
             secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
