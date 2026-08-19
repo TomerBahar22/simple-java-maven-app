@@ -97,3 +97,45 @@ run
 ```
 create a `IAM user` and attach to it the policiy `AmazonEC2ContainerRegistryPowerUser`   
 now in github go to settings then go to secrets -> action and add `AWS_ACCESS_KEY_ID` , `AWS_ACCOUNT_ID` , `AWS_SECRET_ACCESS_KEY`
+
+create a new `.github/workflows/github_aws.yml`
+```yaml
+name: Docker
+
+on:
+  push:
+    branches: [ master ]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch version # in the commit : fix = patch , feat = minor , BREAKING CHANGE = major
+        id: patch
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          default_bump: patch
+
+      - name: Build and push to AWS ECR
+        uses: kciter/aws-ecr-action@v5
+        with:
+            access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            account_id: ${{ secrets.AWS_ACCOUNT_ID }}
+            repo: simple-java-maven-app
+            region: eu-north-1
+            tags: ${{ steps.patch.outputs.new_version }},latest
+
+      
+      - name: deploy
+        run: |
+          docker run ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-north-1.amazonaws.com/simple-java-maven-app:${{ steps.patch.outputs.new_version }}
+```
